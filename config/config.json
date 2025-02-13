@@ -1,0 +1,125 @@
+{
+    "personal_token": "pk_270602200_VCOU65PBQDNFUHGSN3CAJ7LNG6B3144K",
+    "headers": {
+        "Authorization": "pk_270602200_VCOU65PBQDNFUHGSN3CAJ7LNG6B3144K",
+        "Accept": "application/json"
+    },
+    "team_id": "9016552611",
+    "team_name": "Advart Tech",
+    "spaces": [
+        {
+            "space_name": "Advart Tasks",
+            "space_id": "90162302454",
+            "folders": [
+                {
+                    "folder_name": "Social Media",
+                    "folder_id": "90163124972",
+                    "lists": [
+                        {
+                            "list_name": "Beelittle",
+                            "list_id": "901605050377"
+                        },
+                        {
+                            "list_name": "Zing",
+                            "list_id": "901606186307"
+                        },
+                        {
+                            "list_name": "Prathiksham",
+                            "list_id": "901606186317"
+                        },
+                        {
+                            "list_name": "Adoreaboo",
+                            "list_id": "901606186318"
+                        }
+                    ]
+                },
+                {
+                    "folder_name": "Video Edit",
+                    "folder_id": "90163744230",
+                    "lists": [
+                        {
+                            "list_name": "Prabhu",
+                            "list_id": "901606178743"
+                        },
+                        {
+                            "list_name": "Deepak",
+                            "list_id": "901606178750"
+                        },
+                        {
+                            "list_name": "Nandhu",
+                            "list_id": "901606248381"
+                        }
+                    ]
+                },
+                {
+                    "folder_name": "Review",
+                    "folder_id": "90163753547",
+                    "lists": [
+                        {
+                            "list_name": "Beelittle",
+                            "list_id": "901606177816"
+                        },
+                        {
+                            "list_name": "Zing",
+                            "list_id": "901606248326"
+                        },
+                        {
+                            "list_name": "Prathiksham",
+                            "list_id": "901606248338"
+                        },
+                        {
+                            "list_name": "Adoreaboo",
+                            "list_id": "901606248353"
+                        }
+                    ]
+                },
+                {
+                    "folder_name": "Ads",
+                    "folder_id": "90163757793",
+                    "lists": [
+                        {
+                            "list_name": "Beelittle",
+                            "list_id": "901606186180"
+                        },
+                        {
+                            "list_name": "Zing",
+                            "list_id": "901606186297"
+                        },
+                        {
+                            "list_name": "Prathiksham",
+                            "list_id": "901606186300"
+                        },
+                        {
+                            "list_name": "Adoreaboo",
+                            "list_id": "901606186304"
+                        }
+                    ]
+                },
+                {
+                    "folder_name": "Graphic Design",
+                    "folder_id": "90163757847",
+                    "lists": [
+                        {
+                            "list_name": "Abhijith",
+                            "list_id": "901606186292"
+                        },
+                        {
+                            "list_name": "Vaibhav",
+                            "list_id": "901606248361"
+                        }
+                    ]
+                },
+                {
+                    "folder_name": "Final Review",
+                    "folder_id": "90163787605",
+                    "lists": [
+                        {
+                            "list_name": "All",
+                            "list_id": "901606248206"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

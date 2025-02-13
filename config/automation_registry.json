@@ -1,0 +1,115 @@
+{
+    "automations": [
+        {
+            "name": "Update all tasks in Social Media and Ads from In Progress to In Execution",
+            "trigger": "task_status_change",
+            "conditions": {
+                "statuses": "in progress"
+            },
+            "update_params": {
+                "status": "in execution"
+            },
+            "handler": "automation_rules.update_tasks_based_on_conditions",
+            "folders": ["Social Media", "Ads"]
+        },
+        {
+            "name": "Create linked tasks for video editor and graphic designers all tasks in Social Media and Ads - In Execution",
+            "trigger": "create_linked_tasks_for_inexecution_tasks",
+            "conditions": {
+                "statuses": "in execution"
+            },
+            "handler": "automation_rules.create_linked_tasks",
+            "folders": ["Social Media", "Ads"]
+        },
+        {
+            "name": "Create linked tasks for reviewer for all tasks in Video Edit and Graphic Design - In Execution",
+            "trigger": "create_linked_tasks_for_inreview_tasks_for_reviewer",
+            "conditions": {
+                "statuses": "in review"
+            },
+            "handler": "automation_rules.create_linked_tasks",
+            "folders": ["Video Edit", "Graphic Design"]
+        },
+        {
+            "name": "Create linked tasks for approver for all tasks in Review - In Approval",
+            "trigger": "create_linked_tasks_for_inreview_tasks_for_approver",
+            "conditions": {
+                "statuses": "in approval"
+            },
+            "handler": "automation_rules.create_linked_tasks",
+            "folders": ["Review"]
+        },
+        {
+            "name": "Backward - Update all linked tasks in Final Review when task status - In Reedit",
+            "trigger": "update_linked_tasks_for_inreedit_tasks_based_on_approver_for_reviewer",
+            "conditions": {
+                "statuses": "in reedit"
+            },
+            "update_params": {
+                "status": "in progress"
+            },
+            "handler": "automation_rules.update_linked_tasks",
+            "folders": ["Final Review"]
+        },
+        {
+            "name": "Backward - Update all linked tasks in Review when task status - In Reedit",
+            "trigger": "update_linked_tasks_for_inreedit_tasks_based_on_approver_for_reviewer",
+            "conditions": {
+                "statuses": "in reedit"
+            },
+            "update_params": {
+                "status": "in progress"
+            },
+            "handler": "automation_rules.update_linked_tasks",
+            "folders": ["Review"]
+        },
+        {
+            "name": "Forward - Update all linked tasks in Final Review when task status - In Reedit",
+            "trigger": "update_linked_tasks_for_inreedit_tasks_based_on_approver_for_reviewer",
+            "conditions": {
+                "statuses": "in review"
+            },
+            "update_params": {
+                "status": "in progress"
+            },
+            "handler": "automation_rules.update_linked_tasks_forward",
+            "folders": ["Video Edit", "Graphic Design"]
+        },
+        {
+            "name": "Forward - Update all linked tasks in Review when task status - In Reedit",
+            "trigger": "update_linked_tasks_for_inreedit_tasks_based_on_approver_for_reviewer",
+            "conditions": {
+                "statuses": "in approval"
+            },
+            "update_params": {
+                "status": "in progress"
+            },
+            "handler": "automation_rules.update_linked_tasks_forward",
+            "folders": ["Review"]
+        },
+        {
+            "name": "Update all Review Tasks when both review and approval task is marked complete",
+            "trigger": "update_status_complete_for_review_and_approval_tasks",
+            "conditions": {
+                "statuses": ["in approval","in reedit","in progress","to do"]
+            },
+            "update_params": {
+                "status": "complete"
+            },
+            "handler": "automation_rules.update_review_tasks_status",
+            "folders": ["Review"]
+        },
+        {
+            "name": "Update all social media and ads Tasks when all their review task is marked complete in database",
+            "trigger": "update_status_complete_for_tasks_in_execution",
+            "conditions": {
+                "statuses": "in execution"
+            },
+            "update_params": {
+                "status": "to be scheduled"
+            },
+            "handler": "automation_rules.update_main_tasks_status",
+            "folders": ["Social Media", "Ads"]
+        }
+    ]
+}
