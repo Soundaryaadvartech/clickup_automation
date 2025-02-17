@@ -18,6 +18,15 @@ TAG_TO_LIST_ID_MAP = {
     # Add more mappings as needed
 }
 
+# Define a direct mapping of list IDs to their corresponding names
+LIST_ID_TO_NAME_MAP = {
+    '901606178743': 'prabhu',
+    '901606178750': 'deepak',
+    '901606248381': 'nandhu',
+    '901606186292': 'abhijith',
+    '901606248361': 'vaibhav'
+}
+
 # Define a mapping of list IDs to conditional tags for creating linked tasks in relevant list id only based on tags
 LIST_ID_TO_TAGS_MAP = {
     #socialmedia
@@ -42,6 +51,14 @@ LIST_ID_TO_TAGS_MAP = {
     '901606248338': ['all'], #prathiksham
     '901606248326': ['all'], #zing
     '901606248353': ['all'], #adoreaboo
+}
+
+# Define a mapping of review folder list IDs
+REVIEW_FOLDER_LIST_IDS = {
+    '901606177816',  # Beelittle
+    '901606248326',  # Zing
+    '901606248338',  # Prathiksham
+    '901606248353'   # Adoreaboo
 }
 
 def create_linked_tasks(list_ids, conditions):
@@ -98,6 +115,12 @@ def create_linked_tasks(list_ids, conditions):
                     else:
                         first_status = 'to do'  # Fallback to 'to do' if no statuses are found
                     
+                    # Add suffix to task name if the linked task is being created in a review folder
+                    task_name = task['name']
+                    if linked_list_id in REVIEW_FOLDER_LIST_IDS:
+                        source_tag_name = LIST_ID_TO_NAME_MAP.get(list_id, tag_name)
+                        task_name = f"{task_name} - {source_tag_name}"
+
                     task_details = {
                         'description': task['description'],
                         'tags': task['tags'],
@@ -109,7 +132,7 @@ def create_linked_tasks(list_ids, conditions):
                         'custom_fields': task['custom_fields']
                     }
 
-                    response = create_task(linked_list_id, task['name'], task_details)
+                    response = create_task(linked_list_id, task_name, task_details)
                     if 'err' in response:
                         print(f"Failed to create linked task for {task_id} in list {linked_list_id}: {response['err']}")
                     else:
@@ -124,7 +147,7 @@ def create_linked_tasks(list_ids, conditions):
 
                         # Add the new linked task to the list of tasks to add to the database
                         print(f"Adding linked task {linked_task_id} {task_id} {first_status} {linked_list_id} {','.join(tag['name'] for tag in task['tags'])}")
-                        new_tasks_to_add.append((linked_task_id, task_id, first_status, linked_list_id, ",".join(tag['name'] for tag in task['tags'])))
+                        new_tasks_to_add.append((linked_task_id, task_id, first_status, linked_list_id, ",".join(tag['name'] for tag in task['tags']), task_name))
 
     # Bulk add new linked tasks to the database
     if new_tasks_to_add:

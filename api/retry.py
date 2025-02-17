@@ -4,7 +4,7 @@ from urllib3.util.retry import Retry
 
 def get_retry_session():
     retry_strategy = Retry(
-        total=3,  # Number of retries
+        total=30,  # Number of retries
         backoff_factor=1,  # Wait time between retries
         status_forcelist=[429, 500, 502, 503, 504],  # Retry on these status codes
         allowed_methods=["HEAD", "GET", "OPTIONS", "POST", "PUT", "DELETE"]  # Retry on these HTTP methods

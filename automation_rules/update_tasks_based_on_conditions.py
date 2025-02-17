@@ -21,7 +21,7 @@ def update_tasks_based_on_conditions(list_ids, conditions, update_params):
             task_id = task['id']
             if task_id not in existing_task_ids:
                 # Create a new entry in the database with default link_id
-                tasks_to_add.append((task_id, "123456", "in progress", list_id, ",".join(tag['name'] for tag in task['tags'])))
+                tasks_to_add.append((task_id, "123456", "in progress", list_id, ",".join(tag['name'] for tag in task['tags']), task['name']))
                 # print(f"Task {task_id} added to the database with default link_id 123456")
 
             # Update the task in ClickUp

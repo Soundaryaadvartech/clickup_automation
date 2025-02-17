@@ -29,7 +29,7 @@ def update_review_tasks_status(list_ids, conditions, update_params):
     # Fetch all tasks from ClickUp for the collected list IDs
     clickup_tasks = {}
     for list_id in all_list_ids:
-        tasks = get_tasks(list_id, conditions)
+        tasks = get_tasks(list_id)
         for task in tasks:
             clickup_tasks[task['id']] = task
 

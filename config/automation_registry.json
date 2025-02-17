@@ -53,7 +53,7 @@
         },
         {
             "name": "Backward - Update all linked tasks in Review when task status - In Reedit",
-            "trigger": "update_linked_tasks_for_inreedit_tasks_based_on_approver_for_reviewer",
+            "trigger": "update_linked_tasks_for_inreedit_tasks_based_on_reviewer_for_editors",
             "conditions": {
                 "statuses": "in reedit"
             },
@@ -64,8 +64,8 @@
             "folders": ["Review"]
         },
         {
-            "name": "Forward - Update all linked tasks in Final Review when task status - In Reedit",
-            "trigger": "update_linked_tasks_for_inreedit_tasks_based_on_approver_for_reviewer",
+            "name": "Forward - Update all linked tasks in editors to in progress in reviewer",
+            "trigger": "update_linked_tasks_for_inreedit_tasks_based_on_editor_for_reviewer",
             "conditions": {
                 "statuses": "in review"
             },
@@ -76,7 +76,7 @@
             "folders": ["Video Edit", "Graphic Design"]
         },
         {
-            "name": "Forward - Update all linked tasks in Review when task status - In Reedit",
+            "name": "Forward - Update all linked tasks in Review to in progress in final reviewer",
             "trigger": "update_linked_tasks_for_inreedit_tasks_based_on_approver_for_reviewer",
             "conditions": {
                 "statuses": "in approval"
@@ -88,7 +88,7 @@
             "folders": ["Review"]
         },
         {
-            "name": "Update all Review Tasks when both review and approval task is marked complete",
+            "name": "Update all Review Tasks when both review and approval task is marked complete db",
             "trigger": "update_status_complete_for_review_and_approval_tasks",
             "conditions": {
                 "statuses": ["in approval","in reedit","in progress","to do"]

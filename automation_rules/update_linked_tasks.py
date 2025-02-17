@@ -1,4 +1,4 @@
-from api.get_task import get_tasks, get_task
+from api.get_task import get_tasks
 from api.update_task import update_task
 from mysql.database import get_tasks_by_conditions, update_tasks_bulk
 

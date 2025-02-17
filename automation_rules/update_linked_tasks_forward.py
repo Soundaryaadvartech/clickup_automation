@@ -8,6 +8,7 @@ def update_linked_tasks_forward(list_ids, conditions, update_params):
     tasks_to_update_in_db = []
     linked_tasks_to_update = []
     print(f"{update_params['status']} update_linked_tasks")
+    
     for list_id in list_ids:
         print(f"Processing list ID: {list_id}")
         tasks = get_tasks(list_id, conditions)
@@ -15,7 +16,7 @@ def update_linked_tasks_forward(list_ids, conditions, update_params):
         for task in tasks:
             task_id = task['id']
             all_task_ids.append(task_id)
-            print(f"Processing task ID: {task_id} with tags: {task['tags']}")
+            #print(f"Processing task ID: {task_id} with tags: {task['tags']}")
 
     # Fetch tasks from the database for the given list IDs
     existing_tasks = get_tasks_by_conditions(list_ids=list_ids)
@@ -25,6 +26,16 @@ def update_linked_tasks_forward(list_ids, conditions, update_params):
     link_ids = [task['task_id'] for task in existing_tasks]
     linked_tasks = get_tasks_by_conditions(link_ids=link_ids)
     linked_tasks_by_id = {task['link_id']: task for task in linked_tasks}
+
+    # Collect unique list IDs for linked tasks
+    linked_list_ids = list(set([task['list_id'] for task in linked_tasks]))
+
+    # Fetch all linked tasks from ClickUp for the collected list IDs
+    clickup_linked_tasks = {}
+    for list_id in linked_list_ids:
+        tasks = get_tasks(list_id)
+        for task in tasks:
+            clickup_linked_tasks[task['id']] = task
 
     for list_id, tasks in tasks_by_list_id.items():
         for task in tasks:
@@ -44,11 +55,21 @@ def update_linked_tasks_forward(list_ids, conditions, update_params):
                     if db_task['task_id'] in linked_tasks_by_id:
                         linked_task = linked_tasks_by_id[db_task['task_id']]
                         linked_task_id = linked_task['task_id']
-                        linked_tasks_to_update.append({
-                            'linked_task_id': linked_task_id,
-                            'status': update_params['status'],  # Use dynamic status from update_params
-                            'description': task['description']
-                        })
+                        # Check the status of the linked task in ClickUp
+                        if linked_task_id in clickup_linked_tasks:
+                            linked_task_status = clickup_linked_tasks[linked_task_id]['status']['status']
+                            if linked_task_status != "complete":
+                                linked_tasks_to_update.append({
+                                    'linked_task_id': linked_task_id,
+                                    'status': update_params['status'],  # Use dynamic status from update_params
+                                    'description': task['description']
+                                })
+                            else:
+                                # Update the status in the database to "complete"
+                                tasks_to_update_in_db.append({
+                                    'status': "complete",
+                                    'task_id': linked_task_id
+                                })
 
     # Update the status in the database for tasks that have different statuses
     if tasks_to_update_in_db:

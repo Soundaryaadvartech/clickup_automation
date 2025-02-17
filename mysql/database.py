@@ -29,7 +29,7 @@ logging.basicConfig(
 # Global counter for database connections
 connection_counter = 0
 
-def get_db_connection(retries=30, delay=5):
+def get_db_connection(retries=10, delay=5):
     global connection_counter
     for attempt in range(retries):
         try:
@@ -59,7 +59,7 @@ def add_tasks_bulk(tasks):
         return
     try:
         cursor = connection.cursor()
-        query = "INSERT INTO task (task_id, link_id, status, list_id, tags) VALUES (%s, %s, %s, %s, %s)"
+        query = "INSERT INTO task (task_id, link_id, status, list_id, tags, task_name) VALUES (%s, %s, %s, %s, %s, %s)"
         cursor.executemany(query, tasks)
         connection.commit()
         cursor.close()
