@@ -1,17 +1,14 @@
 import pymysql
-import urllib.parse
 import logging
 import time
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
+import urllib.parse
 
 # Define the database connection parameters
 DB_CONFIG = {
     'user':urllib.parse.quote_plus(os.getenv("DB_USER")),
     'password': urllib.parse.quote_plus(os.getenv("DB_PASSWORD")),
-    'host': os.getenv("DB_HOST"),  # This will be the address of the Cloud SQL Proxy
+    'host': os.getenv("DB_HOST"), 
     'database': os.getenv("DB_NAME"),
     'port': int(os.getenv("DB_PORT"))
 }
