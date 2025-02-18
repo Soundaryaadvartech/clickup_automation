@@ -3,6 +3,9 @@ import logging
 import time
 import os
 import urllib.parse
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Define the database connection parameters
 DB_CONFIG = {
