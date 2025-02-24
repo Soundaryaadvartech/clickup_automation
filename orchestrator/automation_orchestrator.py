@@ -28,7 +28,7 @@ def execute_automation(automation):
     conditions = automation['conditions']
     update_params = automation.get('update_params', {})
 
-    print(f"Executing automation with handler: {handler}")
+    #print(f"Executing automation with handler: {handler}")
 
     if handler == 'automation_rules.update_tasks_based_on_conditions':
         print("Starting update_tasks_based_on_conditions")
@@ -68,8 +68,8 @@ def execute_automation(automation):
         print("Finished update_main_tasks_status")
 
 def orchestrate_automations():
-    print(f"Orchestrating automations: {automation_registry['automations']}")
+    #print(f"Orchestrating automations: {automation_registry['automations']}")
     for automation in automation_registry['automations']:
-        print(f"Orchestrating automation: {automation['name']}")
+        #print(f"Orchestrating automation: {automation['name']}")
         execute_automation(automation)
 

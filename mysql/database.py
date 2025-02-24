@@ -40,7 +40,8 @@ def get_db_connection(retries=10, delay=5):
                 database=DB_CONFIG['database'],
                 port=DB_CONFIG['port'],
                 charset="utf8mb4",
-                cursorclass=pymysql.cursors.DictCursor
+                cursorclass=pymysql.cursors.DictCursor,
+                #ssl={'ca': '/path/to/ca-cert.pem'}  # Optional: Add SSL configuration if needed
             )
             connection_counter += 1
             print(f"Connected to MySQL. Total connections made: {connection_counter}")
