@@ -2,19 +2,6 @@ from api.get_task import get_tasks
 from api.create_task import create_task, link_tasks
 from api.get_list_details import get_list_statuses  # Import the function to get list statuses
 from mysql.database import get_tasks_by_conditions, add_tasks_bulk
-import os
-import logging
-
-# Ensure the logs directory exists
-log_file_path = 'logs/task_creation.log'
-os.makedirs(os.path.dirname(log_file_path), exist_ok=True)
-
-# Configure logging
-logging.basicConfig(
-    filename=log_file_path,
-    level=logging.INFO,
-    format='%(asctime)s %(levelname)s %(message)s',
-)
 
 # Define a mapping of tags to list IDs to create tasks based on tags
 TAG_TO_LIST_ID_MAP = {
@@ -148,16 +135,12 @@ def create_linked_tasks(list_ids, conditions):
                         'custom_fields': task['custom_fields']
                     }
                     
-                    due_date = task.get('due_date', 'N/A')
-                    logging.info(f"Before creating task - List ID: {linked_list_id}, Task ID: {task_id}, Due Date: {due_date}")
-                    
                     response = create_task(linked_list_id, task_name, task_details)
                     if 'err' in response:
                         print(f"Failed to create linked task for {task_id} in list {linked_list_id}: {response['err']}")
                     else:
                         linked_task_id = response['id']
                         new_linked_task_ids.add(linked_task_id)
-                        logging.info(f"After creating task - List ID: {linked_list_id}, Task ID: {linked_task_id}, Due Date: {due_date}")
                         print(f"Created linked task ID: {linked_task_id} for task ID: {task_id}")
                         link_response = link_tasks(task_id, linked_task_id)
                         if 'err' in link_response:
