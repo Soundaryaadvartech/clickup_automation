@@ -24,7 +24,6 @@ logger.addHandler(file_handler)
 logger.propagate = False
 
 # Define the database connection parameters
-# Define the database connection parameters
 DB_CONFIG = {
     'user':urllib.parse.quote_plus(os.getenv("DB_USER")),
     'password': urllib.parse.quote_plus(os.getenv("DB_PASSWORD")),
