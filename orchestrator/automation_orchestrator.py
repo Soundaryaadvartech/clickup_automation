@@ -24,11 +24,11 @@ logger.propagate = False
 
 
 # Load the configuration
-with open('/Users/ss/Downloads/Analytics/clickup_automations/config/config.json', 'r') as config_file:
+with open('config/config.json', 'r') as config_file:
     config = json.load(config_file)
 
 # Load the automation registry
-with open('/Users/ss/Downloads/Analytics/clickup_automations/config/automation_registry.json', 'r') as registry_file:
+with open('config/automation_registry.json', 'r') as registry_file:
     automation_registry = json.load(registry_file)
 
 def get_list_ids(folders):
