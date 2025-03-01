@@ -1,68 +1,25 @@
+import logging
 from api.get_task import get_tasks
+from api.update_task import update_task
 from api.create_task import create_task, link_tasks
 from api.get_list_details import get_list_statuses  # Import the function to get list statuses
 from mysql.database import get_tasks_by_conditions, add_tasks_bulk
+from config.linked_tasks_mapping import TAG_TO_LIST_ID_MAP, LIST_ID_TO_NAME_MAP, LIST_ID_TO_TAGS_MAP, REVIEW_FOLDER_LIST_IDS  # Import mappings
 
-# Define a mapping of tags to list IDs to create tasks based on tags
-TAG_TO_LIST_ID_MAP = {
-    'prabhu': '901606178743',
-    'deepak': '901606178750',
-    'nandhu': '901606248381',
-    'abhijith': '901606186292',
-    'vaibhav': '901606248361',
-    'bhuvanesh': '901606586758',
-    'beelittle': '901606177816',
-    'prathiksham': '901606248338',
-    'zing': '901606248326',
-    'adoreaboo': '901606248353',
-    'all': '901606248206',
-    # Add more mappings as needed
-}
+# Configure logging for this script
+logger = logging.getLogger('create_linked_tasks')
+logger.setLevel(logging.INFO)
+# Remove any existing handlers
+if logger.hasHandlers():
+    logger.handlers.clear()
 
-# Define a direct mapping of list IDs to their corresponding names
-LIST_ID_TO_NAME_MAP = {
-    '901606178743': 'prabhu',
-    '901606178750': 'deepak',
-    '901606248381': 'nandhu',
-    '901606186292': 'abhijith',
-    '901606248361': 'vaibhav',
-    '901606586758': 'bhuvanesh',
-}
+file_handler = logging.FileHandler('logs/create_linked_tasks.log')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 
-# Define a mapping of list IDs to conditional tags for creating linked tasks in relevant list id only based on tags
-LIST_ID_TO_TAGS_MAP = {
-    #socialmedia
-    '901605050377': ['prabhu', 'deepak', 'abhijith', 'nandhu', 'vaibhav', 'bhuvanesh'], #beelittle
-    '901606186307': ['prabhu', 'deepak', 'abhijith', 'nandhu', 'vaibhav', 'bhuvanesh'], #zing
-    '901606186317': ['prabhu', 'deepak', 'abhijith', 'nandhu', 'vaibhav', 'bhuvanesh'], #prathiksham
-    '901606186318': ['prabhu', 'deepak', 'abhijith', 'nandhu', 'vaibhav', 'bhuvanesh'], #adoreaboo
-    #ads
-    '901606186180': ['prabhu', 'deepak', 'abhijith', 'nandhu', 'vaibhav', 'bhuvanesh'], #beelittle 
-    '901606186297': ['prabhu', 'deepak', 'abhijith', 'nandhu', 'vaibhav', 'bhuvanesh'], #zing
-    '901606186300': ['prabhu', 'deepak', 'abhijith', 'nandhu', 'vaibhav', 'bhuvanesh'], #prathiksham
-    '901606186304': ['prabhu', 'deepak', 'abhijith', 'nandhu', 'vaibhav', 'bhuvanesh'], #adoreaboo
-    #video edit
-    '901606178743': ['beelittle', 'prathiksham', 'zing', 'adoreaboo'], #prabhu
-    '901606178750': ['beelittle', 'prathiksham', 'zing', 'adoreaboo'], #deepak
-    '901606248381': ['beelittle', 'prathiksham', 'zing', 'adoreaboo'], #nandhu
-    #graphic design
-    '901606186292': ['beelittle', 'prathiksham', 'zing', 'adoreaboo'], #abhijtih
-    '901606248361': ['beelittle', 'prathiksham', 'zing', 'adoreaboo'], #vaibhav
-    '901606586758': ['beelittle', 'prathiksham', 'zing', 'adoreaboo'], #bhuvanesh
-    #review
-    '901606177816': ['all'], #beelittle
-    '901606248338': ['all'], #prathiksham
-    '901606248326': ['all'], #zing
-    '901606248353': ['all'], #adoreaboo
-}
-
-# Define a mapping of review folder list IDs
-REVIEW_FOLDER_LIST_IDS = {
-    '901606177816',  # Beelittle
-    '901606248326',  # Zing
-    '901606248338',  # Prathiksham
-    '901606248353',  # Adoreaboo
-}
+# Disable propagation to avoid logging to the root logger
+logger.propagate = False
 
 def create_linked_tasks(list_ids, conditions):
     all_task_ids = []
@@ -70,13 +27,13 @@ def create_linked_tasks(list_ids, conditions):
     tasks_by_list_id = {}
      
     for list_id in list_ids:
-        print(f"Processing list ID: {list_id}")
+        logger.info(f"Processing list ID: {list_id}")
         tasks = get_tasks(list_id, conditions)
         tasks_by_list_id[list_id] = tasks
         for task in tasks:
             task_id = task['id']
             all_task_ids.append(task_id)
-            print(f"Processing task ID: {task_id} in list ID: {list_id}")
+            logger.info(f"Processing task ID: {task_id} in list ID: {list_id}")
 
     # Collect all target list IDs based on tags
     target_list_ids = set()
@@ -106,10 +63,10 @@ def create_linked_tasks(list_ids, conditions):
                 if tag_name in TAG_TO_LIST_ID_MAP and tag_name in conditional_tags:
                     linked_list_id = TAG_TO_LIST_ID_MAP[tag_name]
                     if task_id in existing_task_ids_by_list_id.get(linked_list_id, set()):
-                        print(f"Task {task_id} already has linked tasks in the target list {linked_list_id}, skipping creation.")
+                        logger.info(f"Task {task_id} already has linked tasks in the target list {linked_list_id}, skipping creation.")
                         continue
 
-                    print(f"Creating linked task in list ID: {linked_list_id} for tag: {tag_name}")
+                    logger.info(f"Creating linked task in list ID: {linked_list_id} for tag: {tag_name}")
 
                     # Fetch the available statuses for the target list
                     list_statuses = get_list_statuses(linked_list_id)
@@ -137,24 +94,30 @@ def create_linked_tasks(list_ids, conditions):
                     
                     response = create_task(linked_list_id, task_name, task_details)
                     if 'err' in response:
-                        print(f"Failed to create linked task for {task_id} in list {linked_list_id}: {response['err']}")
+                        logger.error(f"Failed to create linked task for {task_id} in list {linked_list_id}: {response['err']} in clickup")
                     else:
                         linked_task_id = response['id']
                         new_linked_task_ids.add(linked_task_id)
-                        print(f"Created linked task ID: {linked_task_id} for task ID: {task_id}")
+                        logger.info(f"Created linked task ID: {linked_task_id} for task ID: {task_id} in clickup")
                         link_response = link_tasks(task_id, linked_task_id)
                         if 'err' in link_response:
-                            print(f"Failed to link task {task_id} with {linked_task_id}: {link_response['err']}")
+                            logger.error(f"Failed to link task {task_id} with {linked_task_id}: {link_response['err']} in clickup")
                         else:
-                            print(f"Successfully created and linked task {linked_task_id} for {task_id} in list {linked_list_id}")
+                            logger.info(f"Successfully linked task {linked_task_id} for {task_id} in list {linked_list_id} in clickup")
 
                         # Add the new linked task to the list of tasks to add to the database
-                        print(f"Adding linked task {linked_task_id} {task_id} {first_status} {linked_list_id} {','.join(tag['name'] for tag in task['tags'])}")
+                        logger.info(f"Appending linked task {linked_task_id} {task_id} {first_status} {linked_list_id} {','.join(tag['name'] for tag in task['tags'])} to update in bulk to the database")
                         new_tasks_to_add.append((linked_task_id, task_id, first_status, linked_list_id, ",".join(tag['name'] for tag in task['tags']), task_name))
+
+                        # Check if the original task status is "in approval" and update its name
+                        if isinstance(task['status'], dict) and task['status'].get('status', '').lower() == "in approval":
+                            updated_task_name = f"{task['name']} - FA"
+                            update_task(task_id, {'name': updated_task_name})
+                            logger.info(f"Updated task ID: {task_id} name to include 'FA' suffix.")
 
     # Bulk add new linked tasks to the database
     if new_tasks_to_add:
-        print(f"Adding {len(new_tasks_to_add)} new linked tasks to the database.")
+        logger.info(f"Adding {len(new_tasks_to_add)} new linked tasks to the database.")
         add_tasks_bulk(new_tasks_to_add)
-
-    print(f"Processed {len(new_tasks_to_add)} new linked tasks.")
+    
+    logger.info(f"Processed {len(new_tasks_to_add)} tasks.")

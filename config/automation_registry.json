@@ -48,7 +48,7 @@
             "update_params": {
                 "status": "in progress"
             },
-            "handler": "automation_rules.update_linked_tasks",
+            "handler": "automation_rules.update_linked_tasks_backward",
             "folders": ["Final Review"]
         },
         {
@@ -60,7 +60,7 @@
             "update_params": {
                 "status": "in progress"
             },
-            "handler": "automation_rules.update_linked_tasks",
+            "handler": "automation_rules.update_linked_tasks_backward",
             "folders": ["Review"]
         },
         {

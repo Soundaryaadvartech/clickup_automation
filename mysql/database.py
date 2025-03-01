@@ -7,6 +7,23 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Configure logging for this script
+logger = logging.getLogger('dbconnection')
+logger.setLevel(logging.INFO)
+
+# Remove any existing handlers
+if logger.hasHandlers():
+    logger.handlers.clear()
+
+file_handler = logging.FileHandler('logs/dbconnection.log')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
+# Disable propagation to avoid logging to the root logger
+logger.propagate = False
+
+# Define the database connection parameters
 # Define the database connection parameters
 DB_CONFIG = {
     'user':urllib.parse.quote_plus(os.getenv("DB_USER")),
@@ -16,15 +33,6 @@ DB_CONFIG = {
     'port': int(os.getenv("DB_PORT"))
 }
 
-# Ensure the logs directory exists
-os.makedirs('logs', exist_ok=True)
-
-# Configure logging
-logging.basicConfig(
-    filename='logs/dbconnection.log',
-    level=logging.ERROR,
-    format='%(asctime)s %(levelname)s %(message)s',
-)
 
 # Global counter for database connections
 connection_counter = 0
@@ -44,10 +52,10 @@ def get_db_connection(retries=10, delay=5):
                 #ssl={'ca': '/path/to/ca-cert.pem'}  # Optional: Add SSL configuration if needed
             )
             connection_counter += 1
-            print(f"Connected to MySQL. Total connections made: {connection_counter}")
+            logger.info(f"Connected to MySQL. Total connections made: {connection_counter}")
             return connection
         except pymysql.MySQLError as e:
-            logging.error(f"Error connecting to MySQL: {e}")
+            logger.error(f"Error connecting to MySQL: {e}")
             if attempt < retries - 1:
                 time.sleep(delay)
             else:
@@ -65,9 +73,9 @@ def add_tasks_bulk(tasks):
         connection.commit()
         cursor.close()
         connection.close()
-        print(f"Added {len(tasks)} tasks successfully.")
+        logger.info(f"Added {len(tasks)} tasks successfully.")
     except pymysql.MySQLError as e:
-        logging.error(f"Error executing add_tasks_bulk: {e}")
+        logger.error(f"Error executing add_tasks_bulk: {e}")
         if connection:
             connection.close()
         raise
@@ -94,9 +102,9 @@ def update_tasks_bulk(tasks, columns):
         connection.commit()
         cursor.close()
         connection.close()
-        print(f"Updated {len(tasks)} tasks successfully.")
+        logger.info(f"Updated {len(tasks)} tasks successfully.")
     except pymysql.MySQLError as e:
-        logging.error(f"Error executing update_tasks_bulk: {e}")
+        logger.error(f"Error executing update_tasks_bulk: {e}")
         if connection:
             connection.close()
         raise
@@ -112,9 +120,9 @@ def delete_tasks_bulk(task_ids):
         connection.commit()
         cursor.close()
         connection.close()
-        print(f"Deleted tasks with task_ids {task_ids} successfully.")
+        logger.info(f"Deleted {len(task_ids)} tasks successfully.")
     except pymysql.MySQLError as e:
-        logging.error(f"Error executing delete_tasks_bulk: {e}")
+        logger.error(f"Error executing delete_tasks_bulk: {e}")
         if connection:
             connection.close()
         raise
@@ -148,12 +156,12 @@ def get_tasks_by_conditions(task_ids=None, list_ids=None, link_ids=None, statuse
         cursor.close()
         connection.close()
         if results:
-            print(f"Tasks found: {results}")
+            logger.info(f"Tasks found: {len(results)}")
         else:
-            print(f"No tasks found with the given conditions.")
+            logger.info(f"No tasks found with the given conditions.")
         return results
     except pymysql.MySQLError as e:
-        logging.error(f"Error executing get_tasks_by_conditions: {e}")
+        logger.error(f"Error executing get_tasks_by_conditions: {e}")
         if connection:
             connection.close()
         raise
