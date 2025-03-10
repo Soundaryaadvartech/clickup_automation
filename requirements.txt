@@ -5,4 +5,4 @@ urllib3==2.3.0
 python-dotenv
 cryptography
 oauth2client
-
+gspread
